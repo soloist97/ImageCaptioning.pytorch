@@ -18,7 +18,7 @@ from random import shuffle, seed
 
 def main(params):
 
-    imgs = json.load(open(params['input_json'][0], 'r'))['images']
+    imgs = json.load(open(params['input_json'], 'r'))['images']
     # tmp = []
     # for k in imgs.keys():
     #     for img in imgs[k]:
@@ -29,13 +29,13 @@ def main(params):
     # imgs = tmp
 
     # create output json file
-    out = {'info': {'description': 'This is stable 1.0 version of the 2014 MS COCO dataset.', 'url': 'http://mscoco.org', 'version': '1.0', 'year': 2014, 'contributor': 'Microsoft COCO group', 'date_created': '2015-01-27 09:11:52.357475'}, 'licenses': [{'url': 'http://creativecommons.org/licenses/by-nc-sa/2.0/', 'id': 1, 'name': 'Attribution-NonCommercial-ShareAlike License'}, {'url': 'http://creativecommons.org/licenses/by-nc/2.0/', 'id': 2, 'name': 'Attribution-NonCommercial License'}, {'url': 'http://creativecommons.org/licenses/by-nc-nd/2.0/', 'id': 3, 'name': 'Attribution-NonCommercial-NoDerivs License'}, {'url': 'http://creativecommons.org/licenses/by/2.0/', 'id': 4, 'name': 'Attribution License'}, {'url': 'http://creativecommons.org/licenses/by-sa/2.0/', 'id': 5, 'name': 'Attribution-ShareAlike License'}, {'url': 'http://creativecommons.org/licenses/by-nd/2.0/', 'id': 6, 'name': 'Attribution-NoDerivs License'}, {'url': 'http://flickr.com/commons/usage/', 'id': 7, 'name': 'No known copyright restrictions'}, {'url': 'http://www.usa.gov/copyright.shtml', 'id': 8, 'name': 'United States Government Work'}], 'type': 'captions'}
+    out = {'info': {'description': 'Stanford Paragraph Dataset ({} split)'.format(params['split'])}, 'licenses': 'http://creativecommons.org/licenses/by/4.0/', 'type': 'captions'}
     out.update({'images': [], 'annotations': []})
 
     cnt = 0
     empty_cnt = 0
     for i, img in enumerate(imgs):
-        if img['split'] == 'train':
+        if img['split'] != params['split']:
             continue
         out['images'].append(
             {'id': img.get('cocoid', img['imgid'])})
@@ -56,10 +56,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     # input json
-    parser.add_argument('--input_json', nargs='+', required=True,
-                        help='input json file to process into hdf5')
-    parser.add_argument('--output_json', default='data.json',
-                        help='output json file')
+    parser.add_argument('--input_json', help='input json file to process')
+    parser.add_argument('--split', default='test', help='train/val/test')
+    parser.add_argument('--output_json', default='data.json', help='output json file')
 
     args = parser.parse_args()
     params = vars(args)  # convert to ordinary dict

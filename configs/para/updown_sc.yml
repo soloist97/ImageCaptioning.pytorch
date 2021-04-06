@@ -1,0 +1,16 @@
+_BASE_: updown.yml
+
+start_from: log_para_xe
+
+learning_rate: 0.00005
+self_critical_after: 0
+learning_rate_decay_start: -1
+max_epochs: 30
+
+# sampling settings
+block_trigrams: 1
+max_length: 175
+train_sample_n: 5
+cider_reward_weight: 1
+bleu_reward_weight: 1
+temperature: 0.5

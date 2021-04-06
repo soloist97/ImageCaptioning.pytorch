@@ -1,0 +1,33 @@
+# base
+caption_model: adaatt
+input_json: data/paratalk.json
+input_fc_dir: data/bu36/parabu_fc
+input_att_dir: data/bu36/parabu_att
+input_box_dir: data/bu36/parabu_box
+input_label_h5: data/paratalk_label.h5
+cached_tokens: para-train-idxs
+learning_rate: 0.0005
+scheduled_sampling_start: 0
+# checkpoint_path: $ckpt_path
+# $start_from
+language_eval: 1
+save_checkpoint_every: 3000
+val_images_use: -1  # all
+rnn_size: 512
+input_encoding_size: 512
+att_feat_size: 2048
+att_hid_size: 512
+
+batch_size: 10
+learning_rate_decay_start: 0
+max_epochs: 30
+seq_per_img: 1
+
+# Maximum length during sampling
+max_length: 175
+train_sample_n: 5
+self_critical_after: 30
+
+block_trigrams: 1
+cider_reward_weight: 1
+bleu_reward_weight: 1

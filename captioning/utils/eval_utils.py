@@ -36,11 +36,13 @@ def count_bad(sen):
         return 0
 
 
-def getCOCO(dataset):
+def getCOCO(dataset, split='test'):
     if 'coco' in dataset:
         annFile = 'coco-caption/annotations/captions_val2014.json'
     elif 'flickr30k' in dataset or 'f30k' in dataset:
         annFile = 'data/f30k_captions4eval.json'
+    elif 'para' in dataset:
+        annFile = 'coco-caption/annotations/captions_para_{}.json'.format(split)
     return COCO(annFile)
 
 
@@ -57,6 +59,8 @@ def language_eval(dataset, preds, preds_n, eval_kwargs, split):
             dataset_file = 'data/dataset_coco.json'
         elif 'flickr30k' in dataset or 'f30k' in dataset:
             dataset_file = 'data/dataset_flickr30k.json'
+        elif 'para' in dataset:
+            dataset_file = 'data/dataset_para.json'
         training_sentences = set([' '.join(__['tokens']) for _ in json.load(open(dataset_file))['images'] if not _['split'] in ['val', 'test'] for __ in _['sentences']])
         generated_sentences = set([_['caption'] for _ in preds_n])
         novels = generated_sentences - training_sentences
@@ -71,7 +75,7 @@ def language_eval(dataset, preds, preds_n, eval_kwargs, split):
 
     cache_path = os.path.join('eval_results/', '.cache_'+ model_id + '_' + split + '.json')
 
-    coco = getCOCO(dataset)
+    coco = getCOCO(dataset, split)
     valids = coco.getImgIds()
 
     # filter results to only those in MSCOCO validation set
@@ -93,10 +97,10 @@ def language_eval(dataset, preds, preds_n, eval_kwargs, split):
     out['entropy'] = mean_entropy
 
     imgToEval = cocoEval.imgToEval
-    for k in list(imgToEval.values())[0]['SPICE'].keys():
-        if k != 'All':
-            out['SPICE_'+k] = np.array([v['SPICE'][k]['f'] for v in imgToEval.values()])
-            out['SPICE_'+k] = (out['SPICE_'+k][out['SPICE_'+k]==out['SPICE_'+k]]).mean()
+    # for k in list(imgToEval.values())[0]['SPICE'].keys():
+    #     if k != 'All':
+    #         out['SPICE_'+k] = np.array([v['SPICE'][k]['f'] for v in imgToEval.values()])
+    #         out['SPICE_'+k] = (out['SPICE_'+k][out['SPICE_'+k]==out['SPICE_'+k]]).mean()
     for p in preds_filt:
         image_id, caption = p['image_id'], p['caption']
         imgToEval[image_id]['caption'] = caption

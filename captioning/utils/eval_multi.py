@@ -34,7 +34,7 @@ except:
 
 
 def eval_allspice(dataset, preds_n, model_id, split):
-    coco = getCOCO(dataset)
+    coco = getCOCO(dataset, split)
     valids = coco.getImgIds()
     
     capsById = {}
@@ -71,7 +71,7 @@ def eval_allspice(dataset, preds_n, model_id, split):
 def eval_oracle(dataset, preds_n, model_id, split):
     cache_path = os.path.join('eval_results/', model_id + '_' + split + '_n.json')
 
-    coco = getCOCO(dataset)
+    coco = getCOCO(dataset, split)
     valids = coco.getImgIds()
 
     capsById = {}
@@ -177,7 +177,7 @@ def eval_div_stats(dataset, preds_n, model_id, split):
 def eval_self_cider(dataset, preds_n, model_id, split):
     cache_path = os.path.join('eval_results/', model_id + '_' + split + '_n.json')
 
-    coco = getCOCO(dataset)
+    coco = getCOCO(dataset, split)
     valids = coco.getImgIds()
     
     # Get Cider_scorer
